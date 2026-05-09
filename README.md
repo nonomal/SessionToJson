@@ -31,12 +31,6 @@ node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); consol
 node --check content.js
 node --check popup.js
 node --check converter.js
-node tests\converter.test.js
-node tests\download-filename.test.js
-node tests\converter-source.test.js
-node tests\chinese-ui.test.js
-node tests\auto-convert.test.js
-node tests\manifest-icons.test.js
 ```
 
 ## 项目结构
