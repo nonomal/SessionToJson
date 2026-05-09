@@ -45,10 +45,18 @@ async function fetchChatGptSessionJson() {
     const session = await response.json();
     pageJsonInput.value = JSON.stringify(session, null, 2);
     convertJson();
-    await checkChatGptPlusEligibility(session.accessToken);
+    await checkChatGptPlusEligibilityForFreePlan(session);
   } catch (error) {
     setError(getErrorMessage(error));
   }
+}
+
+async function checkChatGptPlusEligibilityForFreePlan(source) {
+  if (readPathOrDefault(source, 'account.planType', '') !== 'free') {
+    return;
+  }
+
+  await checkChatGptPlusEligibility(source.accessToken);
 }
 
 async function checkChatGptPlusEligibility(accessToken) {
@@ -100,9 +108,7 @@ async function readPageJson() {
     pageJsonInput.value = JSON.stringify(source, null, 2);
     convertJson();
 
-    if (source.accessToken) {
-      await checkChatGptPlusEligibility(source.accessToken);
-    }
+    await checkChatGptPlusEligibilityForFreePlan(source);
   } catch (error) {
     setError(`无法从此页面读取有效 JSON。${getErrorMessage(error)}`);
   }
