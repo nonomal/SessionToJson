@@ -4,6 +4,7 @@ const serverUrlInput = document.getElementById('serverUrl');
 const cpaPasswordInput = document.getElementById('cpaPassword');
 const toggleCpaPasswordButton = document.getElementById('toggleCpaPasswordButton');
 const statusElement = document.getElementById('status');
+const fetchChatGptSessionButton = document.getElementById('fetchChatGptSessionButton');
 const readPageButton = document.getElementById('readPageButton');
 const convertButton = document.getElementById('convertButton');
 const copyButton = document.getElementById('copyButton');
@@ -13,7 +14,9 @@ const DEFAULT_SERVER_BASE_URL = 'http://localhost:8317';
 const SERVER_BASE_URL_STORAGE_KEY = 'serverBaseUrl';
 const CPA_PASSWORD_STORAGE_KEY = 'cpaPassword';
 const UPLOAD_PATH = '/v0/management/auth-files';
+const CHATGPT_SESSION_URL = 'https://chatgpt.com/api/auth/session';
 
+fetchChatGptSessionButton.addEventListener('click', fetchChatGptSessionJson);
 readPageButton.addEventListener('click', readPageJson);
 convertButton.addEventListener('click', convertJson);
 copyButton.addEventListener('click', copyResult);
@@ -26,6 +29,24 @@ cpaPasswordInput.addEventListener('change', saveCpaPassword);
 cpaPasswordInput.addEventListener('blur', saveCpaPassword);
 initializeServerBaseUrl();
 initializeCpaPassword();
+
+async function fetchChatGptSessionJson() {
+  setStatus('正在获取 ChatGPT Session...');
+
+  try {
+    const response = await fetch(CHATGPT_SESSION_URL, { credentials: 'include' });
+
+    if (!response.ok) {
+      throw new Error(`获取 ChatGPT Session 失败：HTTP ${response.status}`);
+    }
+
+    const session = await response.json();
+    pageJsonInput.value = JSON.stringify(session, null, 2);
+    convertJson();
+  } catch (error) {
+    setError(getErrorMessage(error));
+  }
+}
 
 async function readPageJson() {
   setStatus('正在读取当前页面 JSON...');

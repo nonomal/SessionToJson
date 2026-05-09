@@ -40,6 +40,12 @@ textarea {
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
 }
 
+.header-actions {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
 .eyebrow {
   margin: 0 0 4px;
   color: #9ca3af;
