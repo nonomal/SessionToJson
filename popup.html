@@ -29,11 +29,17 @@
         <textarea id="outputJson" spellcheck="false" readonly placeholder="转换后的 JSON 会显示在这里。"></textarea>
       </section>
 
+      <section class="panel compact">
+        <label for="serverUrl">服务器地址</label>
+        <input id="serverUrl" type="url" spellcheck="false" placeholder="http://localhost:8317" value="http://localhost:8317">
+      </section>
+
       <p id="status" class="status" role="status" aria-live="polite"></p>
 
       <div class="actions">
         <button id="copyButton" type="button">复制结果</button>
         <button id="downloadButton" type="button">下载 JSON</button>
+        <button id="uploadButton" type="button">上传到服务器</button>
       </div>
     </main>
 

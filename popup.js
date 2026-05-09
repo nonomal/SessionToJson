@@ -1,15 +1,24 @@
 const pageJsonInput = document.getElementById('pageJson');
 const outputJsonInput = document.getElementById('outputJson');
+const serverUrlInput = document.getElementById('serverUrl');
 const statusElement = document.getElementById('status');
 const readPageButton = document.getElementById('readPageButton');
 const convertButton = document.getElementById('convertButton');
 const copyButton = document.getElementById('copyButton');
 const downloadButton = document.getElementById('downloadButton');
+const uploadButton = document.getElementById('uploadButton');
+const DEFAULT_SERVER_BASE_URL = 'http://localhost:8317';
+const SERVER_BASE_URL_STORAGE_KEY = 'serverBaseUrl';
+const UPLOAD_PATH = '/v0/management/auth-files';
 
 readPageButton.addEventListener('click', readPageJson);
 convertButton.addEventListener('click', convertJson);
 copyButton.addEventListener('click', copyResult);
 downloadButton.addEventListener('click', downloadResult);
+uploadButton.addEventListener('click', uploadResult);
+serverUrlInput.addEventListener('change', saveServerBaseUrl);
+serverUrlInput.addEventListener('blur', saveServerBaseUrl);
+initializeServerBaseUrl();
 
 async function readPageJson() {
   setStatus('正在读取当前页面 JSON...');
@@ -73,6 +82,31 @@ function downloadResult() {
   }
 }
 
+async function uploadResult() {
+  try {
+    requireOutput();
+
+    const source = parseJson(pageJsonInput.value, '页面 JSON');
+    const file = new File([outputJsonInput.value], buildDownloadFilename(source), { type: 'application/json' });
+    const formData = new FormData();
+
+    formData.append('file', file);
+
+    const response = await fetch(buildUploadUrl(serverUrlInput.value), {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`上传失败：HTTP ${response.status}`);
+    }
+
+    setStatus('上传成功。');
+  } catch (error) {
+    setError(getErrorMessage(error));
+  }
+}
+
 function parseJson(text, label) {
   try {
     return JSON.parse(text);
@@ -90,6 +124,58 @@ function buildDownloadFilename(source) {
   const plan = sanitizeFilenamePart(readPathOrDefault(source, 'account.planType', 'unknown-plan'));
 
   return `codex-${email}-${plan}.json`;
+}
+
+function getServerBaseUrl(value) {
+  const trimmed = String(value || '').trim();
+  return trimmed || DEFAULT_SERVER_BASE_URL;
+}
+
+function buildUploadUrl(value) {
+  const baseUrl = getServerBaseUrl(value);
+  let parsed;
+
+  try {
+    parsed = new URL(baseUrl);
+  } catch (error) {
+    throw new Error('服务器地址不是有效的 URL。');
+  }
+
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error('服务器地址不是有效的 URL。');
+  }
+
+  return `${baseUrl.replace(/\/+$/, '')}${UPLOAD_PATH}`;
+}
+
+function initializeServerBaseUrl() {
+  const storage = getStorageLocal();
+
+  if (!storage) {
+    serverUrlInput.value = DEFAULT_SERVER_BASE_URL;
+    return;
+  }
+
+  storage.get(SERVER_BASE_URL_STORAGE_KEY).then((result) => {
+    serverUrlInput.value = getServerBaseUrl(result[SERVER_BASE_URL_STORAGE_KEY]);
+  }).catch(() => {
+    serverUrlInput.value = DEFAULT_SERVER_BASE_URL;
+  });
+}
+
+function saveServerBaseUrl() {
+  const value = getServerBaseUrl(serverUrlInput.value);
+  serverUrlInput.value = value;
+
+  const storage = getStorageLocal();
+
+  if (storage) {
+    storage.set({ [SERVER_BASE_URL_STORAGE_KEY]: value });
+  }
+}
+
+function getStorageLocal() {
+  return typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local ? chrome.storage.local : null;
 }
 
 function readPathOrDefault(source, path, fallback) {

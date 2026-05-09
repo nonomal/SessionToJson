@@ -17,6 +17,7 @@ body {
 }
 
 button,
+input,
 textarea {
   font: inherit;
 }
@@ -66,6 +67,10 @@ h1 {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+.panel.compact {
+  gap: 6px;
+}
+
 label {
   color: #d1d5db;
   font-size: 12px;
@@ -73,6 +78,7 @@ label {
   letter-spacing: 0.04em;
 }
 
+input,
 textarea {
   width: 100%;
   min-height: 116px;
@@ -89,10 +95,18 @@ textarea {
   caret-color: #e5e7eb;
 }
 
+input {
+  min-height: 38px;
+  resize: none;
+  font-family: inherit;
+}
+
+input::placeholder,
 textarea::placeholder {
   color: #6b7280;
 }
 
+input:focus,
 textarea:focus {
   border-color: #9ca3af;
   box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.16);
