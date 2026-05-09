@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,29 +10,31 @@
     <main class="app">
       <header class="header">
         <div>
-          <p class="eyebrow">Chrome JSON tool</p>
           <h1>SessionToJson</h1>
         </div>
-        <button id="readPageButton" type="button">Read Page JSON</button>
+        <button id="readPageButton" type="button">读取页面 JSON</button>
       </header>
 
       <section class="panel">
-        <label for="pageJson">Page JSON</label>
-        <textarea id="pageJson" spellcheck="false" placeholder="Open a page whose body is JSON, then click Read Page JSON."></textarea>
+        <label for="pageJson">页面 JSON</label>
+        <textarea id="pageJson" spellcheck="false" placeholder="打开正文为 JSON 的页面，然后点击读取页面 JSON。"></textarea>
       </section>
 
       <div class="actions">
-        <button id="convertButton" type="button" class="primary">Convert</button>
-        <button id="copyButton" type="button">Copy Result</button>
-        <button id="downloadButton" type="button">Download JSON</button>
+        <button id="convertButton" type="button" class="primary">转换</button>
       </div>
 
       <section class="panel">
-        <label for="outputJson">Output JSON</label>
-        <textarea id="outputJson" spellcheck="false" readonly placeholder="Converted JSON appears here."></textarea>
+        <label for="outputJson">输出 JSON</label>
+        <textarea id="outputJson" spellcheck="false" readonly placeholder="转换后的 JSON 会显示在这里。"></textarea>
       </section>
 
       <p id="status" class="status" role="status" aria-live="polite"></p>
+
+      <div class="actions">
+        <button id="copyButton" type="button">复制结果</button>
+        <button id="downloadButton" type="button">下载 JSON</button>
+      </div>
     </main>
 
     <script src="converter.js"></script>

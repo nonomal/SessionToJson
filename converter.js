@@ -10,9 +10,15 @@
     { from: 'account.id', to: 'account_id' },
     { from: 'user.email', to: 'email' },
     { from: 'expires', to: 'expired' },
+    { from: 'account.id', to: 'chatgpt_account_id' },
+    { from: 'account.planType', to: 'plan_type' },
+    { from: 'account.planType', to: 'chatgpt_plan_type' },
+    { from: 'session_token', to: 'session_token' },
     { to: 'last_refresh', value: '' },
     { to: 'refresh_token', value: '' },
-    { to: 'type', value: 'codex' }
+    { to: 'type', value: 'codex' },
+    { to: 'disabled', value: false },
+    { to: 'id_token_synthetic', value: true }
   ];
 
   function convertSessionJson(source) {

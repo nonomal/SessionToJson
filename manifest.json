@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "SessionToJson",
   "version": "0.1.0",
-  "description": "Read JSON from the current page and convert it with a JSON template.",
+  "description": "读取当前页面中的 JSON，并转换为 Codex 可用的 JSON。",
   "action": {
     "default_popup": "popup.html",
     "default_title": "SessionToJson",

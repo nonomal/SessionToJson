@@ -12,13 +12,13 @@ copyButton.addEventListener('click', copyResult);
 downloadButton.addEventListener('click', downloadResult);
 
 async function readPageJson() {
-  setStatus('Reading current page JSON...');
+  setStatus('正在读取当前页面 JSON...');
 
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     if (!tab || !tab.id) {
-      throw new Error('No active tab is available.');
+      throw new Error('没有可用的活动标签页。');
     }
 
     const response = await chrome.tabs.sendMessage(tab.id, { type: 'SESSION_TO_JSON_READ_PAGE' });
@@ -26,15 +26,15 @@ async function readPageJson() {
 
     JSON.parse(text);
     pageJsonInput.value = formatJsonText(text);
-    setStatus('Page JSON loaded.');
+    convertJson();
   } catch (error) {
-    setError(`Could not read valid JSON from this page. ${getErrorMessage(error)}`);
+    setError(`无法从此页面读取有效 JSON。${getErrorMessage(error)}`);
   }
 }
 
 function convertJson() {
   try {
-    const source = parseJson(pageJsonInput.value, 'Page JSON');
+    const source = parseJson(pageJsonInput.value, '页面 JSON');
     const result = SessionToJsonConverter.convertSessionJson(source);
 
     outputJsonInput.value = JSON.stringify(result.output, null, 2);
@@ -48,7 +48,7 @@ async function copyResult() {
   try {
     requireOutput();
     await navigator.clipboard.writeText(outputJsonInput.value);
-    setStatus('Result copied.');
+    setStatus('复制成功。');
   } catch (error) {
     setError(getErrorMessage(error));
   }
@@ -58,7 +58,7 @@ function downloadResult() {
   try {
     requireOutput();
 
-    const source = parseJson(pageJsonInput.value, 'Page JSON');
+    const source = parseJson(pageJsonInput.value, '页面 JSON');
     const blob = new Blob([outputJsonInput.value], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -67,7 +67,7 @@ function downloadResult() {
     link.download = buildDownloadFilename(source);
     link.click();
     URL.revokeObjectURL(url);
-    setStatus('Download started.');
+    setStatus('开始下载。');
   } catch (error) {
     setError(getErrorMessage(error));
   }
@@ -77,7 +77,7 @@ function parseJson(text, label) {
   try {
     return JSON.parse(text);
   } catch (error) {
-    throw new Error(`${label} is not valid JSON.`);
+    throw new Error('页面 JSON 不是有效的 JSON。');
   }
 }
 
@@ -117,17 +117,17 @@ function hasOwn(value, key) {
 
 function requireOutput() {
   if (!outputJsonInput.value.trim()) {
-    throw new Error('Convert JSON before using this action.');
+    throw new Error('请先转换 JSON 再执行此操作。');
   }
 }
 
 function setConversionStatus(warnings) {
   if (!warnings.length) {
-    setStatus('Conversion complete.');
+    setStatus('转换完成。');
     return;
   }
 
-  setStatus(`Conversion complete with ${warnings.length} warnings: ${warnings.join(', ')}`);
+  setStatus(`转换完成，但有 ${warnings.length} 条警告：${warnings.join(', ')}`);
 }
 
 function setStatus(message) {
