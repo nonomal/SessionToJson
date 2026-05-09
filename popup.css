@@ -29,9 +29,9 @@ textarea {
 }
 
 .header {
-  display: flex;
+  display: grid;
   align-items: start;
-  justify-content: space-between;
+  justify-content: stretch;
   gap: 12px;
   padding: 12px;
   border: 1px solid rgba(75, 85, 99, 0.6);
@@ -42,8 +42,9 @@ textarea {
 
 .header-actions {
   display: grid;
+  grid-template-columns: repeat(2, max-content);
   gap: 8px;
-  justify-items: end;
+  justify-items: start;
 }
 
 .eyebrow {
