@@ -95,10 +95,14 @@ async function readPageJson() {
 
     const response = await chrome.tabs.sendMessage(tab.id, { type: 'SESSION_TO_JSON_READ_PAGE' });
     const text = response && typeof response.text === 'string' ? response.text : '';
+    const source = JSON.parse(text);
 
-    JSON.parse(text);
-    pageJsonInput.value = formatJsonText(text);
+    pageJsonInput.value = JSON.stringify(source, null, 2);
     convertJson();
+
+    if (source.accessToken) {
+      await checkChatGptPlusEligibility(source.accessToken);
+    }
   } catch (error) {
     setError(`无法从此页面读取有效 JSON。${getErrorMessage(error)}`);
   }
