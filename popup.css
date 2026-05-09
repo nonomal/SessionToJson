@@ -101,6 +101,25 @@ input {
   font-family: inherit;
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 46px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  min-height: 28px;
+  width: 32px;
+  padding: 0;
+  transform: translateY(-50%);
+  box-shadow: none;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: #6b7280;

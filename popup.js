@@ -1,6 +1,8 @@
 const pageJsonInput = document.getElementById('pageJson');
 const outputJsonInput = document.getElementById('outputJson');
 const serverUrlInput = document.getElementById('serverUrl');
+const cpaPasswordInput = document.getElementById('cpaPassword');
+const toggleCpaPasswordButton = document.getElementById('toggleCpaPasswordButton');
 const statusElement = document.getElementById('status');
 const readPageButton = document.getElementById('readPageButton');
 const convertButton = document.getElementById('convertButton');
@@ -9,6 +11,7 @@ const downloadButton = document.getElementById('downloadButton');
 const uploadButton = document.getElementById('uploadButton');
 const DEFAULT_SERVER_BASE_URL = 'http://localhost:8317';
 const SERVER_BASE_URL_STORAGE_KEY = 'serverBaseUrl';
+const CPA_PASSWORD_STORAGE_KEY = 'cpaPassword';
 const UPLOAD_PATH = '/v0/management/auth-files';
 
 readPageButton.addEventListener('click', readPageJson);
@@ -16,9 +19,13 @@ convertButton.addEventListener('click', convertJson);
 copyButton.addEventListener('click', copyResult);
 downloadButton.addEventListener('click', downloadResult);
 uploadButton.addEventListener('click', uploadResult);
+toggleCpaPasswordButton.addEventListener('click', toggleCpaPasswordVisibility);
 serverUrlInput.addEventListener('change', saveServerBaseUrl);
 serverUrlInput.addEventListener('blur', saveServerBaseUrl);
+cpaPasswordInput.addEventListener('change', saveCpaPassword);
+cpaPasswordInput.addEventListener('blur', saveCpaPassword);
 initializeServerBaseUrl();
+initializeCpaPassword();
 
 async function readPageJson() {
   setStatus('正在读取当前页面 JSON...');
@@ -87,6 +94,7 @@ async function uploadResult() {
     requireOutput();
 
     const source = parseJson(pageJsonInput.value, '页面 JSON');
+    const password = getCpaPassword(cpaPasswordInput.value);
     const file = new File([outputJsonInput.value], buildDownloadFilename(source), { type: 'application/json' });
     const formData = new FormData();
 
@@ -94,6 +102,7 @@ async function uploadResult() {
 
     const response = await fetch(buildUploadUrl(serverUrlInput.value), {
       method: 'POST',
+      headers: { Authorization: `Bearer ${password}` },
       body: formData
     });
 
@@ -129,6 +138,16 @@ function buildDownloadFilename(source) {
 function getServerBaseUrl(value) {
   const trimmed = String(value || '').trim();
   return trimmed || DEFAULT_SERVER_BASE_URL;
+}
+
+function getCpaPassword(value) {
+  const password = String(value || '').trim();
+
+  if (!password) {
+    throw new Error('请填写 CPA 密码。');
+  }
+
+  return password;
 }
 
 function buildUploadUrl(value) {
@@ -172,6 +191,40 @@ function saveServerBaseUrl() {
   if (storage) {
     storage.set({ [SERVER_BASE_URL_STORAGE_KEY]: value });
   }
+}
+
+function initializeCpaPassword() {
+  const storage = getStorageLocal();
+
+  if (!storage) {
+    cpaPasswordInput.value = '';
+    return;
+  }
+
+  storage.get(CPA_PASSWORD_STORAGE_KEY).then((result) => {
+    cpaPasswordInput.value = String(result[CPA_PASSWORD_STORAGE_KEY] || '');
+  }).catch(() => {
+    cpaPasswordInput.value = '';
+  });
+}
+
+function saveCpaPassword() {
+  const value = String(cpaPasswordInput.value || '').trim();
+  cpaPasswordInput.value = value;
+
+  const storage = getStorageLocal();
+
+  if (storage) {
+    storage.set({ [CPA_PASSWORD_STORAGE_KEY]: value });
+  }
+}
+
+function toggleCpaPasswordVisibility() {
+  const shouldShow = cpaPasswordInput.type === 'password';
+
+  cpaPasswordInput.type = shouldShow ? 'text' : 'password';
+  toggleCpaPasswordButton.textContent = shouldShow ? '🙈' : '👁';
+  toggleCpaPasswordButton.setAttribute('aria-label', shouldShow ? '隐藏 CPA 密码' : '显示 CPA 密码');
 }
 
 function getStorageLocal() {
