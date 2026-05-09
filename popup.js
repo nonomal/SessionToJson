@@ -15,6 +15,8 @@ const SERVER_BASE_URL_STORAGE_KEY = 'serverBaseUrl';
 const CPA_PASSWORD_STORAGE_KEY = 'cpaPassword';
 const UPLOAD_PATH = '/v0/management/auth-files';
 const CHATGPT_SESSION_URL = 'https://chatgpt.com/api/auth/session';
+const CHATGPT_PLUS_ELIGIBILITY_URL = 'https://chatgpt.com/backend-api/accounts/check/v4-2023-04-27?timezone_offset_min=-480';
+const CHATGPT_PLUS_PLAN_ID = 'chatgptplusplan';
 
 fetchChatGptSessionButton.addEventListener('click', fetchChatGptSessionJson);
 readPageButton.addEventListener('click', readPageJson);
@@ -43,9 +45,42 @@ async function fetchChatGptSessionJson() {
     const session = await response.json();
     pageJsonInput.value = JSON.stringify(session, null, 2);
     convertJson();
+    await checkChatGptPlusEligibility(session.accessToken);
   } catch (error) {
     setError(getErrorMessage(error));
   }
+}
+
+async function checkChatGptPlusEligibility(accessToken) {
+  if (!accessToken) {
+    throw new Error('获取 ChatGPT Session 失败：缺少 accessToken');
+  }
+
+  const response = await fetch(CHATGPT_PLUS_ELIGIBILITY_URL, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+
+  if (!response.ok) {
+    throw new Error(`检查 ChatGPT Plus 资格失败：HTTP ${response.status}`);
+  }
+
+  const result = await response.json();
+  setChatGptPlusEligibilityStatus(hasChatGptPlusEligibility(result));
+}
+
+function hasChatGptPlusEligibility(result) {
+  const offers = result && result.accounts && result.accounts.default && result.accounts.default.eligible_offers && Array.isArray(result.accounts.default.eligible_offers.offers)
+    ? result.accounts.default.eligible_offers.offers
+    : [];
+  const plusOffer = offers.find((offer) => offer && offer.id === CHATGPT_PLUS_PLAN_ID);
+
+  return Boolean(plusOffer && plusOffer.epl_enabled);
+}
+
+function setChatGptPlusEligibilityStatus(hasEligibility) {
+  const message = hasEligibility ? '此账户有 ChatGPT Plus 订阅资格。' : '此账户暂无 ChatGPT Plus 订阅资格。';
+
+  setStatus(`${statusElement.textContent}${message}`);
 }
 
 async function readPageJson() {
