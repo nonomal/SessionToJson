@@ -13,7 +13,7 @@
     { from: 'account.id', to: 'chatgpt_account_id' },
     { from: 'account.planType', to: 'plan_type' },
     { from: 'account.planType', to: 'chatgpt_plan_type' },
-    { from: 'session_token', to: 'session_token' },
+    { from: 'sessionToken', to: 'session_token' },
     { to: 'last_refresh', value: '' },
     { to: 'refresh_token', value: '' },
     { to: 'type', value: 'codex' },
