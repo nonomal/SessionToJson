@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "SessionToJson",
+  "version": "0.1.0",
+  "description": "Read JSON from the current page and convert it with a JSON template.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "SessionToJson",
+    "default_icon": "icons/icon.svg"
+  },
+  "icons": {
+    "16": "icons/icon.svg",
+    "48": "icons/icon.svg",
+    "128": "icons/icon.svg"
+  },
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

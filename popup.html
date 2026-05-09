@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SessionToJson</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <div>
+          <p class="eyebrow">Chrome JSON tool</p>
+          <h1>SessionToJson</h1>
+        </div>
+        <button id="readPageButton" type="button">Read Page JSON</button>
+      </header>
+
+      <section class="panel">
+        <label for="pageJson">Page JSON</label>
+        <textarea id="pageJson" spellcheck="false" placeholder="Open a page whose body is JSON, then click Read Page JSON."></textarea>
+      </section>
+
+      <div class="actions">
+        <button id="convertButton" type="button" class="primary">Convert</button>
+        <button id="copyButton" type="button">Copy Result</button>
+        <button id="downloadButton" type="button">Download JSON</button>
+      </div>
+
+      <section class="panel">
+        <label for="outputJson">Output JSON</label>
+        <textarea id="outputJson" spellcheck="false" readonly placeholder="Converted JSON appears here."></textarea>
+      </section>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </main>
+
+    <script src="converter.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
