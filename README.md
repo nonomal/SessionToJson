@@ -24,6 +24,8 @@ ChatGPT Session JSON、ChatGPT accessToken、ChatGPT Plus 资格检测、Session
 
 ## 安装使用
 
+- TG 交流群：https://t.me/sessiontoproxy
+
 1. 打开 Chrome 扩展程序页面：`chrome://extensions/`。
 2. 开启“开发者模式”。
 3. 点击“加载已解压的扩展程序”。
