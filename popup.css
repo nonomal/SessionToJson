@@ -9,10 +9,16 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  min-height: 100%;
+}
+
 body {
   margin: 0;
-  width: 420px;
-  min-height: 600px;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
   background: linear-gradient(145deg, #050816 0%, #0b1020 52%, #111827 100%);
 }
 
@@ -25,6 +31,7 @@ textarea {
 .app {
   display: grid;
   gap: 14px;
+  min-height: 100vh;
   padding: 16px;
 }
 
@@ -143,6 +150,14 @@ textarea:focus {
   grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
   justify-content: center;
   gap: 8px;
+}
+
+.result-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.result-actions button {
+  padding: 0 8px;
 }
 
 button {
