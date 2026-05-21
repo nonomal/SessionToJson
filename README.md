@@ -26,6 +26,7 @@ ChatGPT Session JSON、ChatGPT accessToken、ChatGPT Plus 资格检测、Session
 ## 安装使用
 
 - TG 交流群：https://t.me/sessiontoproxy
+- 油猴脚本安装地址：https://greasyfork.org/zh-CN/scripts/579168-sessiontojson
 
 1. 打开 Chrome 扩展程序页面：`chrome://extensions/`。
 2. 开启“开发者模式”。
